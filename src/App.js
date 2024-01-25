@@ -68,6 +68,8 @@ function App() {
                   axios
                     .get("https://codingapple1.github.io/shop/data2.json")
                     .then((data) => {
+                      // let copy = [...shoes, ...data.data]
+                      // setShoes; (copy);
                       setShoes((prevShoes) => [...prevShoes, ...data.data]);
 
                       console.log(data.data[0]);
