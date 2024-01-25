@@ -7,9 +7,10 @@ import { useState } from "react";
 import data from "./data";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import Detail from "./routes/Detail";
+import axios from "axios";
 
 function App() {
-  let [shoes] = useState(data);
+  let [shoes, setShoes] = useState(data);
   let navigate = useNavigate(); //훅이란 유용한것들이 들어있는것
 
   return (
@@ -57,10 +58,27 @@ function App() {
               <div className="container">
                 <div className="row">
                   {shoes.map((a, i) => {
-                    return <Card shoes={shoes} i={i}></Card>;
+                    return <Card shoes={shoes} i={i} key={i}></Card>;
                   })}
                 </div>
               </div>
+
+              <button
+                onClick={() => {
+                  axios
+                    .get("https://codingapple1.github.io/shop/data2.json")
+                    .then((data) => {
+                      setShoes((prevShoes) => [...prevShoes, ...data.data]);
+
+                      console.log(data.data[0]);
+                    })
+                    .catch(() => {
+                      console.log("실패");
+                    });
+                }}
+              >
+                버튼
+              </button>
             </>
           }
         ></Route>
