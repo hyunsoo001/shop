@@ -1,17 +1,25 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable react/jsx-pascal-case */
 /* eslint-disable jsx-a11y/alt-text */
 import { Navbar, Container, Nav } from "react-bootstrap";
 import "./App.css";
 import bg from "./img/bg.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import data from "./data";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import Detail from "./routes/Detail";
 import axios from "axios";
 
 function App() {
+  //data 가져와서 바로 집어 넣었음. 배열이면서 안에는 객체로 되어있음.
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate(); //훅이란 유용한것들이 들어있는것
+
+  let [따봉, 따봉변경] = useState([0, 0, 0]);
+
+  let [btCount, setBtCount] = useState(1);
+
+  let [showLoading, setShowLoading] = useState(false);
 
   return (
     <div className="App">
@@ -62,24 +70,71 @@ function App() {
                   })}
                 </div>
               </div>
+              {showLoading ? <LoadingComponent /> : null}
 
-              <button
+              {/* <button
                 onClick={() => {
+                  setShowLoading(true);
+                  setBtCount((btCount = btCount + 1));
+                  {
+                    // eslint-disable-next-line no-unused-expressions
+                    btCount > 3 ? alert("더 이상 없습니다") : null;
+                  }
                   axios
-                    .get("https://codingapple1.github.io/shop/data2.json")
-                    .then((data) => {
-                      // let copy = [...shoes, ...data.data]
-                      // setShoes; (copy);
-                      setShoes((prevShoes) => [...prevShoes, ...data.data]);
+                    .get(
+                      `https://codingapple1.github.io/shop/data${btCount}.json`
+                    )
+                    .then((result) => {
+                      // let copy = [...shoes, ...data.data];
+                      // setShoes(copy);
 
-                      console.log(data.data[0]);
+                      //함수형 업데이트
+                      setShoes((prevShoes) => [...prevShoes, ...result.data]);
+
+                      console.log(result.data[0]);
                     })
                     .catch(() => {
+                      setShowLoading(false);
                       console.log("실패");
                     });
+
+                  setShowLoading(false);
                 }}
               >
-                버튼
+                더보기
+              </button> */}
+              <button
+                onClick={() => {
+                  setShowLoading(true);
+
+                  //함수형 업데이트
+                  setBtCount((prevBtCount) => prevBtCount + 1);
+
+                  // 지연 추가 (예: 3초 지연)
+                  setTimeout(() => {
+                    axios
+                      .get(
+                        `https://codingapple1.github.io/shop/data${btCount}.json`
+                      )
+                      .then((result) => {
+                        setShoes((prevShoes) => [...prevShoes, ...result.data]);
+                        console.log(result.data[0]);
+                      })
+                      .catch(() => {
+                        console.log("실패");
+                      })
+                      .finally(() => {
+                        setShowLoading(false);
+                      });
+                  }, 2000); // 2초 지연
+
+                  // 이 부분은 지연 시간 동안 로딩 상태가 즉시 false로 변경되므로 의미가 없습니다.
+                  //finally 안에 써야지 의미가있지 그냥 안에 써봤자 true에서 바로 false로 바뀌어버린다
+                  //처음에 잘못 구성된 구조였음
+                  // setShowLoading(false);
+                }}
+              >
+                더보기
               </button>
             </>
           }
@@ -105,6 +160,20 @@ function App() {
 
         <Route path="*" element={<div>없는페이지에요</div>}></Route>
       </Routes>
+      {/* <div>
+        <button
+          onClick={() => {
+            //따봉변경(따봉[0] + 1);
+            let copy = [...따봉];
+            copy[0] = copy[0] + 1;
+            따봉변경(copy);
+          }}
+        >
+          따봉버튼
+          {console.log("따봉 :", 따봉[0])}
+        </button>
+        {따봉[0]}
+      </div> */}
     </div>
   );
 }
@@ -140,4 +209,20 @@ function Card(props) {
     </div>
   );
 }
+
+const LoadingComponent = () => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "20vh",
+        fontWeight: "bold",
+      }}
+    >
+      <p>Loading...</p>
+    </div>
+  );
+};
 export default App;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 // import styled from "styled-components";
 
 // let YellowBtn = styled.button`
@@ -41,8 +42,14 @@ function Detail(props) {
 
   const result = props.shoes.find((item) => item.id === parseInt(id));
 
+  // let 찾은상품 = props.shoes.find(function (x) {
+  //   return x.id == id;
+  // });
+
   console.log(result);
   const [showAlert, setShowAlert] = useState(true);
+
+  let [탭, 탭변경] = useState(0);
 
   useEffect(() => {
     // 2초 후에 알림을 숨김
@@ -65,8 +72,17 @@ function Detail(props) {
     }
   });
 
+  let [fade2, setFade2] = useState("");
+
+  useEffect(() => {
+    setFade2("end");
+    return () => {
+      setFade2("");
+    };
+  }, []);
+
   return (
-    <div className="container">
+    <div className={`container start ${fade2}`}>
       {/* <Box>
         <YellowBtn bg="blue">버튼</YellowBtn>
         <YellowBtn bg="orange">버튼</YellowBtn>
@@ -78,7 +94,7 @@ function Detail(props) {
         {/* 나머지 컴포넌트 내용 */}
       </div>
 
-      {count}
+      {/* {count}
       <button
         onClick={() => {
           setCount(count + 1);
@@ -93,7 +109,7 @@ function Detail(props) {
           setNum(e.target.value);
           console.log(e.target.value);
         }}
-      ></input>
+      ></input> */}
 
       {result ? (
         <div className="row">
@@ -111,10 +127,86 @@ function Detail(props) {
             <p>{result.price}</p>
             <button className="btn btn-danger">주문하기</button>
           </div>
+
+          <Nav variant="tabs" defaultActiveKey="link0">
+            <Nav.Item>
+              <Nav.Link
+                eventKey="link0"
+                onClick={() => {
+                  탭변경(0);
+                }}
+              >
+                버튼0
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link
+                eventKey="link1"
+                onClick={() => {
+                  탭변경(1);
+                }}
+              >
+                버튼1
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link
+                eventKey="link2"
+                onClick={() => {
+                  탭변경(2);
+                }}
+              >
+                버튼2
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+
+          <TabContent 탭={탭}></TabContent>
         </div>
       ) : (
         <div>없는 페이지입니다.</div>
       )}
+    </div>
+  );
+}
+// function TabContent({ 탭 }) {
+//   if (탭 === 0) {
+//     return <div>내용0</div>;
+//   } else if (탭 === 1) {
+//     return <div>내용1</div>;
+//   } else if (탭 === 2) {
+//     return <div>내용2</div>;
+//   }
+// }
+
+//이런 방법도 있구나. 오호~!!
+function TabContent({ 탭 }) {
+  // const tabContents = [
+  //   <div className="start end">
+  //     {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>]}
+  //   </div>,
+  // ];
+
+  // return tabContents[탭];
+
+  let [fade, setFade] = useState("");
+
+  useEffect(() => {
+    //setFade("");
+    setTimeout(() => {
+      setFade("end");
+    }, 100);
+    //setFade("end");
+
+    //리액트의 automatic batching
+    return () => {
+      setFade("");
+    };
+  }, [탭]);
+
+  return (
+    <div className={`start ${fade}`}>
+      {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][탭]}
     </div>
   );
 }
