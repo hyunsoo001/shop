@@ -1,6 +1,10 @@
+// import React, { useContext, useEffect, useState } from "react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Nav } from "react-bootstrap";
+
+import { Context1 } from "../App";
+
 // import styled from "styled-components";
 
 // let YellowBtn = styled.button`
@@ -35,6 +39,8 @@ function Detail(props) {
   //   }
   //   console.log("안녕");
   // });
+
+  //let { 재고 } = useContext(Context1);
 
   let [count, setCount] = useState(0);
 
@@ -161,7 +167,7 @@ function Detail(props) {
             </Nav.Item>
           </Nav>
 
-          <TabContent 탭={탭}></TabContent>
+          <TabContent 탭={탭} shoes={props.shoes}></TabContent>
         </div>
       ) : (
         <div>없는 페이지입니다.</div>
@@ -180,7 +186,7 @@ function Detail(props) {
 // }
 
 //이런 방법도 있구나. 오호~!!
-function TabContent({ 탭 }) {
+function TabContent({ 탭, shoes }) {
   // const tabContents = [
   //   <div className="start end">
   //     {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>]}
@@ -188,6 +194,7 @@ function TabContent({ 탭 }) {
   // ];
 
   // return tabContents[탭];
+  //let { 재고 } = useContext(Context1);
 
   let [fade, setFade] = useState("");
 
@@ -206,6 +213,7 @@ function TabContent({ 탭 }) {
 
   return (
     <div className={`start ${fade}`}>
+      {/* {[<div>{재고[0]}</div>, <div>내용1</div>, <div>내용2</div>][탭]} */}
       {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][탭]}
     </div>
   );

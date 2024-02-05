@@ -4,13 +4,19 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 import "./App.css";
 import bg from "./img/bg.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext } from "react";
 import data from "./data";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import Detail from "./routes/Detail";
 import axios from "axios";
+import Cart from "./routes/Cart";
+
+//state 보관함
+export let Context1 = createContext();
 
 function App() {
+  let [재고] = useState([10, 11, 12]);
+
   //data 가져와서 바로 집어 넣었음. 배열이면서 안에는 객체로 되어있음.
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate(); //훅이란 유용한것들이 들어있는것
@@ -141,8 +147,14 @@ function App() {
         ></Route>
         <Route
           path="/detail/:id"
-          element={<Detail shoes={shoes}></Detail>}
+          element={
+            // <Context1.Provider value={{ 재고 }}>
+            //   <Detail shoes={shoes}></Detail>
+            // </Context1.Provider>
+            <Detail shoes={shoes}></Detail>
+          }
         ></Route>
+        <Route path="/cart" element={<Cart></Cart>} />
 
         {/* Nested Routes*/}
         <Route path="/about" element={<About />}>
