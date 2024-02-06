@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Nav } from "react-bootstrap";
-
+import { useDispatch, useSelector } from "react-redux";
 import { Context1 } from "../App";
+import { addProduct } from "../store";
+import { Table } from "react-bootstrap";
 
 // import styled from "styled-components";
 
@@ -32,6 +34,11 @@ import { Context1 } from "../App";
 // }
 
 function Detail(props) {
+  let state = useSelector((state) => state);
+  console.log(state);
+
+  let dispatch = useDispatch();
+
   //렌더링이 다 되고나서 실행됩니다
   // useEffect(() => {
   //   for (var i = 0; i < 10000; i++) {
@@ -48,11 +55,25 @@ function Detail(props) {
 
   const result = props.shoes.find((item) => item.id === parseInt(id));
 
+  useEffect(() => {
+    let arr = localStorage.getItem("watched");
+    let tempArr = JSON.parse(arr);
+    tempArr.push(id);
+
+    //let uniqueArray = [...new Set(tempArr)];
+
+    tempArr = new Set(tempArr);
+    tempArr = Array.from(tempArr);
+
+    localStorage.setItem("watched", JSON.stringify(tempArr));
+  }, []);
+
   // let 찾은상품 = props.shoes.find(function (x) {
   //   return x.id == id;
   // });
 
   console.log(result);
+
   const [showAlert, setShowAlert] = useState(true);
 
   let [탭, 탭변경] = useState(0);
@@ -131,7 +152,37 @@ function Detail(props) {
             <h4 className="pt-5">{result.title}</h4>
             <p>{result.content}</p>
             <p>{result.price}</p>
-            <button className="btn btn-danger">주문하기</button>
+
+            <button
+              className="btn btn-danger"
+              onClick={() => {
+                dispatch(addProduct(result));
+              }}
+            >
+              주문하기
+            </button>
+            <div>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>상품명</th>
+                    <th>수량</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {state.cart.map((a, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>{state.cart[i].id}</td>
+                        <td>{state.cart[i].name}</td>
+                        <td>{state.cart[i].count}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
           </div>
 
           <Nav variant="tabs" defaultActiveKey="link0">

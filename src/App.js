@@ -15,6 +15,11 @@ import Cart from "./routes/Cart";
 export let Context1 = createContext();
 
 function App() {
+  useEffect(() => {
+    if (!localStorage.getItem("watched"))
+      localStorage.setItem("watched", JSON.stringify([]));
+  }, []);
+
   let [재고] = useState([10, 11, 12]);
 
   //data 가져와서 바로 집어 넣었음. 배열이면서 안에는 객체로 되어있음.
